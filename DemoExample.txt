@@ -1,0 +1,57 @@
+Entity SeniorCook1;
+Entity SeniorCook2;
+Entity JuniorCook1;
+Entity JuniorCook2;
+Entity Trainee1;
+Entity Trainee2;
+
+Entity Server1;
+Entity Server2;
+Entity Server3;
+Entity Server4;
+
+EntityGroup SeniorCooks: SeniorCook1, SeniorCook2;
+EntityGroup JuniorCooks: JuniorCook1, JuniorCook2;
+EntityGroup Trainees: Trainee1, Trainee2;
+
+EntityGroup Server3And4: Server3, Server4;
+
+Shift Fri1 is 10/01/2021 08:00 - 10/01/2021 12:00 "Breakfast Special: Strawberry Waffles";
+Shift Fri2 is 10/01/2021 12:00 - 10/01/2021 16:00 "Lunch Special: Soup & Sandwich";
+Shift Fri3 is 10/01/2021 16:00 - 10/01/2021 20:00 "Dinner Special: Beef Wellington";
+Shift Sat1 is 10/02/2021 08:00 - 10/02/2021 12:00 "Brunch Buffet";
+Shift Sat2 is 10/02/2021 12:00 - 10/02/2021 16:00 "Brunch Buffet";
+Shift Sat3 is 10/02/2021 16:00 - 10/02/2021 20:00 "Dinner Special: Shepherd's Pie";
+Shift Sun1 is 10/03/2021 08:00 - 10/03/2021 12:00 "Brunch Buffet";
+Shift Sun2 is 10/03/2021 12:00 - 10/03/2021 16:00 "Brunch Buffet";
+Shift Sun3 is 10/03/2021 16:00 - 10/03/2021 20:00 "Dinner Special: Mussels & Fries";
+
+Shift Group All: Fri1, Fri2, Fri3, Sat1, Sat2, Sat3, Sun1, Sun2, Sun3;
+Shift Group Fri: Fri1, Fri2, Fri3;
+Shift Group Sat: Sat1, Sat2, Sat3;
+Shift Group Sun: Sun1, Sun2, Sun3;
+
+Shift Group AfternoonEvening: Fri2, Sat2, Sun2, Fri3, Sat3, Sun3;
+
+Shift Group Server1Shifts: Fri1, Fri2, Sat1, Sat2, Sun1, Sun2;
+Shift Group Server2Shifts: Fri2, Fri3, Sat2, Sat3, Sun2, Sun3;
+
+Apply AfternoonEvening: SeniorCooks | Offset: >> 7 DAYS | Repeat: 2;
+
+Merge FriPM: Fri AND AfternoonEvening;
+Merge SunPM: Sun AND AfternoonEvening;
+Merge FriSunPM: FriPM OR SunPM;
+
+Apply FriSunPM: Trainees | Offset: >> 7 DAYS |  Repeat: 2;
+
+Merge Mornings: All EXCEPT AfternoonEvening;
+Apply Mornings: JuniorCooks | Offset: >> 7 DAYS | Repeat: 2;
+
+Apply Server1Shifts: Server1 | Offset: >> 7 DAYS | Repeat: 2;
+Apply Server2Shifts: Server2 | Offset: >> 7 DAYS | Repeat: 2;
+
+if (Server1Shifts AND Server2Shifts) {
+    Merge OverlappingShifts: Server1Shifts AND Server2Shifts;
+    Apply OverlappingShifts: Server3And4 | Offset: >>  7 DAYS | Repeat: 2;
+} else {
+}
