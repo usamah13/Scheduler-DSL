@@ -1,0 +1,23 @@
+Entity Person1;
+Entity Person2;
+Entity Person3;
+
+Shift S1 is 10/11/2021 12:00 - 10/11/2021 13:00;
+Shift S2 is 10/12/2021 12:00 - 10/12/2021 13:00;
+
+Shift S3 is 10/13/2021 12:00 - 10/13/2021 13:00;
+Shift S4 is 10/14/2021 12:00 - 10/14/2021 13:00;
+Shift S5 is 10/15/2021 12:00 - 10/15/2021 13:00;
+
+Shift Group SG1: S1, S2, S3;
+Shift Group SG2: S2, S4, S5;
+
+Apply SG1: Person2;
+Merge merge3: merge1 AND merge2;
+Merge merge1: SG1 AND SG2;
+Merge merge2: SG1 OR SG2;
+Merge merge5: SG1 XOR SG2;
+Merge merge4: merge2 EXCEPT merge3;
+
+Apply merge4: Person1;
+Apply merge5: Person3;
